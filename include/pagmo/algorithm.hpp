@@ -30,6 +30,7 @@ see https://www.gnu.org/licenses/. */
 #define PAGMO_ALGORITHM_HPP
 
 #include <cassert>
+#include <concepts>
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -173,6 +174,35 @@ public:
 
 template <typename T>
 const bool is_uda<T>::value;
+
+// C++20 Concept definitions for algorithm interface requirements
+
+/// Concept for types with set_verbosity() method
+template <typename T>
+concept has_set_verbosity_method = requires(T& a) {
+    { a.set_verbosity(1u) } -> std::same_as<void>;
+};
+
+/// Concept for types with has_set_verbosity() method
+template <typename T>
+concept has_override_set_verbosity = requires(const T& a) {
+    { a.has_set_verbosity() } -> std::same_as<bool>;
+};
+
+/// Concept for types with evolve() method
+template <typename T>
+concept has_evolve_method = requires(const T& a, const population& pop) {
+    { a.evolve(pop) } -> std::same_as<population>;
+};
+
+/// Concept for user-defined algorithms (UDA)
+template <typename T>
+concept uda_type = std::same_as<T, uncvref_t<T>> 
+    && std::default_initializable<T>
+    && std::copy_constructible<T> 
+    && std::move_constructible<T>
+    && std::destructible<T> 
+    && has_evolve_method<T>;
 
 namespace detail
 {
