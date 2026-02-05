@@ -29,6 +29,7 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_TYPE_TRAITS_HPP
 #define PAGMO_TYPE_TRAITS_HPP
 
+#include <concepts>
 #include <cstddef>
 #include <initializer_list>
 #include <string>
@@ -273,6 +274,39 @@ public:
 
 template <typename T>
 const bool has_get_thread_safety<T>::value;
+
+// C++20 Concept definitions for algorithm/problem interface requirements
+// These complement the existing type traits and provide cleaner constraint syntax
+
+/// Concept for types with set_seed() method
+template <typename T>
+concept has_set_seed_method = requires(T& a) {
+    { a.set_seed(1u) } -> std::same_as<void>;
+};
+
+/// Concept for types with has_set_seed() method
+template <typename T>
+concept has_override_set_seed = requires(const T& a) {
+    { a.has_set_seed() } -> std::same_as<bool>;
+};
+
+/// Concept for types with get_name() method
+template <typename T>
+concept has_name_method = requires(const T& a) {
+    { a.get_name() } -> std::same_as<std::string>;
+};
+
+/// Concept for types with get_extra_info() method
+template <typename T>
+concept has_extra_info_method = requires(const T& a) {
+    { a.get_extra_info() } -> std::same_as<std::string>;
+};
+
+/// Concept for types with get_thread_safety() method
+template <typename T>
+concept has_thread_safety_method = requires(const T& a) {
+    { a.get_thread_safety() } -> std::same_as<thread_safety>;
+};
 
 } // namespace pagmo
 

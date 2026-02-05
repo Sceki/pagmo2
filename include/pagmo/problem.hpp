@@ -31,6 +31,7 @@ see https://www.gnu.org/licenses/. */
 
 #include <atomic>
 #include <cassert>
+#include <concepts>
 #include <exception>
 #include <iostream>
 #include <memory>
@@ -446,6 +447,54 @@ public:
     /// Value of the type trait.
     static constexpr bool value = implementation_defined;
 };
+
+// C++20 Concept definitions for problem interface requirements
+
+/// Concept for types with fitness() method
+template <typename T>
+concept has_fitness_method = requires(const T& p, const vector_double& dv) {
+    { p.fitness(dv) } -> std::same_as<vector_double>;
+};
+
+/// Concept for types with get_bounds() method
+template <typename T>
+concept has_bounds_method = requires(const T& p) {
+    { p.get_bounds() } -> std::same_as<std::pair<vector_double, vector_double>>;
+};
+
+/// Concept for types with gradient() method
+template <typename T>
+concept has_gradient_method = requires(const T& p, const vector_double& dv) {
+    { p.gradient(dv) } -> std::same_as<vector_double>;
+};
+
+/// Concept for types with has_gradient() method
+template <typename T>
+concept has_override_gradient = requires(const T& p) {
+    { p.has_gradient() } -> std::same_as<bool>;
+};
+
+/// Concept for types with hessians() method
+template <typename T>
+concept has_hessians_method = requires(const T& p, const vector_double& dv) {
+    { p.hessians(dv) } -> std::same_as<std::vector<vector_double>>;
+};
+
+/// Concept for types with has_hessians() method
+template <typename T>
+concept has_override_hessians = requires(const T& p) {
+    { p.has_hessians() } -> std::same_as<bool>;
+};
+
+/// Concept for user-defined problems (UDP)
+template <typename T>
+concept udp_type = std::same_as<T, uncvref_t<T>>
+    && std::default_initializable<T>
+    && std::copy_constructible<T>
+    && std::move_constructible<T>
+    && std::destructible<T>
+    && has_fitness_method<T>
+    && has_bounds_method<T>;
 
 namespace detail
 {

@@ -30,6 +30,7 @@ see https://www.gnu.org/licenses/. */
 #define PAGMO_BFE_HPP
 
 #include <cassert>
+#include <concepts>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -109,6 +110,23 @@ public:
 
 template <typename T>
 const bool is_udbfe<T>::value;
+
+// C++20 Concept for batch fitness evaluator interface requirements
+
+/// Concept for types with operator() for batch fitness evaluation
+template <typename T>
+concept has_bfe_call_operator_method = requires(const T& b, const problem& p, const vector_double& dvs) {
+    { b(p, dvs) } -> std::same_as<vector_double>;
+};
+
+/// Concept for user-defined batch fitness evaluators (UDBFE)
+template <typename T>
+concept udbfe_type = std::same_as<T, uncvref_t<T>>
+    && std::default_initializable<T>
+    && std::copy_constructible<T>
+    && std::move_constructible<T>
+    && std::destructible<T>
+    && has_bfe_call_operator_method<T>;
 
 namespace detail
 {
