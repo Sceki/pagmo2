@@ -30,6 +30,7 @@ see https://www.gnu.org/licenses/. */
 #define PAGMO_R_POLICY_HPP
 
 #include <cassert>
+#include <concepts>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -111,6 +112,30 @@ public:
 
 template <typename T>
 const bool is_udrp<T>::value;
+
+// C++20 Concept for replacement policy interface requirements
+
+/// Concept for types with replace() method
+template <typename T>
+concept has_replace_method = requires(const T& rp, const individuals_group_t& inds, 
+                                      const vector_double::size_type& nx,
+                                      const vector_double::size_type& nix,
+                                      const vector_double::size_type& nobj,
+                                      const vector_double::size_type& nec,
+                                      const vector_double::size_type& nic,
+                                      const vector_double& tol,
+                                      const individuals_group_t& mig) {
+    { rp.replace(inds, nx, nix, nobj, nec, nic, tol, mig) } -> std::same_as<individuals_group_t>;
+};
+
+/// Concept for user-defined replacement policies (UDRP)
+template <typename T>
+concept udrp_type = std::same_as<T, uncvref_t<T>> 
+    && std::default_initializable<T>
+    && std::copy_constructible<T> 
+    && std::move_constructible<T>
+    && std::destructible<T> 
+    && has_replace_method<T>;
 
 namespace detail
 {

@@ -30,6 +30,7 @@ see https://www.gnu.org/licenses/. */
 #define PAGMO_S_POLICY_HPP
 
 #include <cassert>
+#include <concepts>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -111,6 +112,29 @@ public:
 
 template <typename T>
 const bool is_udsp<T>::value;
+
+// C++20 Concept for selection policy interface requirements
+
+/// Concept for types with select() method
+template <typename T>
+concept has_select_method = requires(const T& sp, const individuals_group_t& inds,
+                                     const vector_double::size_type& nx,
+                                     const vector_double::size_type& nix,
+                                     const vector_double::size_type& nobj,
+                                     const vector_double::size_type& nec,
+                                     const vector_double::size_type& nic,
+                                     const vector_double& tol) {
+    { sp.select(inds, nx, nix, nobj, nec, nic, tol) } -> std::same_as<individuals_group_t>;
+};
+
+/// Concept for user-defined selection policies (UDSP)
+template <typename T>
+concept udsp_type = std::same_as<T, uncvref_t<T>> 
+    && std::default_initializable<T>
+    && std::copy_constructible<T> 
+    && std::move_constructible<T>
+    && std::destructible<T> 
+    && has_select_method<T>;
 
 namespace detail
 {
