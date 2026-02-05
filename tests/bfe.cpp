@@ -460,7 +460,13 @@ BOOST_AUTO_TEST_CASE(lambda_std_function)
     auto fun = [](const problem &p, const vector_double &dvs) {
         return vector_double(p.get_nf() * (dvs.size() / p.get_nx()), 1.);
     };
+    // In C++20, stateless lambdas are default constructible, so they qualify as UDBFE
+    // In C++17, they were not default constructible
+#if __cplusplus >= 202002L
+    BOOST_CHECK(is_udbfe<decltype(fun)>::value);
+#else
     BOOST_CHECK(!is_udbfe<decltype(fun)>::value);
+#endif
 #if !defined(_MSC_VER)
     BOOST_CHECK(is_udbfe<decltype(+fun)>::value);
 #endif
