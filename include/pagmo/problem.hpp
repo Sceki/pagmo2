@@ -488,11 +488,11 @@ concept has_override_hessians = requires(const T& p) {
 
 /// Concept for user-defined problems (UDP)
 template <typename T>
-concept udp_type = std::same_as<T, uncvref_t<T>> 
+concept udp_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_fitness_method<T>
     && has_bounds_method<T>;
 

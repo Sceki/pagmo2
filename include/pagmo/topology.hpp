@@ -179,11 +179,11 @@ concept has_push_back_method = requires(T& t) {
 
 /// Concept for user-defined topologies (UDT)
 template <typename T>
-concept udt_type = std::same_as<T, uncvref_t<T>> 
+concept udt_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_get_connections_method<T>
     && has_push_back_method<T>;
 

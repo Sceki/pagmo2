@@ -117,7 +117,7 @@ const bool is_udrp<T>::value;
 
 /// Concept for types with replace() method
 template <typename T>
-concept has_replace_method = requires(const T& rp, const individuals_group_t& inds, 
+concept has_replace_method = requires(const T& rp, const individuals_group_t& inds,
                                       const vector_double::size_type& nx,
                                       const vector_double::size_type& nix,
                                       const vector_double::size_type& nobj,
@@ -130,11 +130,11 @@ concept has_replace_method = requires(const T& rp, const individuals_group_t& in
 
 /// Concept for user-defined replacement policies (UDRP)
 template <typename T>
-concept udrp_type = std::same_as<T, uncvref_t<T>> 
+concept udrp_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_replace_method<T>;
 
 namespace detail

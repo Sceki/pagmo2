@@ -121,11 +121,11 @@ concept has_bfe_call_operator_method = requires(const T& b, const problem& p, co
 
 /// Concept for user-defined batch fitness evaluators (UDBFE)
 template <typename T>
-concept udbfe_type = std::same_as<T, uncvref_t<T>> 
+concept udbfe_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_bfe_call_operator_method<T>;
 
 namespace detail

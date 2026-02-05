@@ -197,11 +197,11 @@ concept has_evolve_method = requires(const T& a, const population& pop) {
 
 /// Concept for user-defined algorithms (UDA)
 template <typename T>
-concept uda_type = std::same_as<T, uncvref_t<T>> 
+concept uda_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_evolve_method<T>;
 
 namespace detail

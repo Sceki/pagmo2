@@ -129,11 +129,11 @@ concept has_select_method = requires(const T& sp, const individuals_group_t& ind
 
 /// Concept for user-defined selection policies (UDSP)
 template <typename T>
-concept udsp_type = std::same_as<T, uncvref_t<T>> 
+concept udsp_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_select_method<T>;
 
 namespace detail

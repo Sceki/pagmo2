@@ -151,11 +151,11 @@ concept has_run_evolve_method = requires(const T& i, island& isl) {
 
 /// Concept for user-defined islands (UDI)
 template <typename T>
-concept udi_type = std::same_as<T, uncvref_t<T>> 
+concept udi_type = std::same_as<T, uncvref_t<T>>
     && std::default_initializable<T>
-    && std::copy_constructible<T> 
+    && std::copy_constructible<T>
     && std::move_constructible<T>
-    && std::destructible<T> 
+    && std::destructible<T>
     && has_run_evolve_method<T>;
 
 namespace detail
