@@ -30,6 +30,7 @@ see https://www.gnu.org/licenses/. */
 #define PAGMO_TOPOLOGY_HPP
 
 #include <cassert>
+#include <concepts>
 #include <cstddef>
 #include <memory>
 #include <ostream>
@@ -161,6 +162,30 @@ public:
 
 template <typename T>
 const bool is_udt<T>::value;
+
+// C++20 Concept for topology interface requirements
+
+/// Concept for types with get_connections() method
+template <typename T>
+concept has_get_connections_method = requires(const T& t, std::size_t n) {
+    { t.get_connections(n) } -> std::same_as<std::pair<std::vector<std::size_t>, vector_double>>;
+};
+
+/// Concept for types with push_back() method
+template <typename T>
+concept has_push_back_method = requires(T& t) {
+    { t.push_back() } -> std::same_as<void>;
+};
+
+/// Concept for user-defined topologies (UDT)
+template <typename T>
+concept udt_type = std::same_as<T, uncvref_t<T>> 
+    && std::default_initializable<T>
+    && std::copy_constructible<T> 
+    && std::move_constructible<T>
+    && std::destructible<T> 
+    && has_get_connections_method<T>
+    && has_push_back_method<T>;
 
 namespace detail
 {

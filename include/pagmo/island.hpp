@@ -29,6 +29,7 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_ISLAND_HPP
 #define PAGMO_ISLAND_HPP
 
+#include <concepts>
 #include <functional>
 #include <future>
 #include <iostream>
@@ -139,6 +140,23 @@ public:
 
 template <typename T>
 const bool is_udi<T>::value;
+
+// C++20 Concept for island interface requirements
+
+/// Concept for types with run_evolve() method
+template <typename T>
+concept has_run_evolve_method = requires(const T& i, island& isl) {
+    { i.run_evolve(isl) } -> std::same_as<void>;
+};
+
+/// Concept for user-defined islands (UDI)
+template <typename T>
+concept udi_type = std::same_as<T, uncvref_t<T>> 
+    && std::default_initializable<T>
+    && std::copy_constructible<T> 
+    && std::move_constructible<T>
+    && std::destructible<T> 
+    && has_run_evolve_method<T>;
 
 namespace detail
 {
